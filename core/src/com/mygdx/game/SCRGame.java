@@ -8,8 +8,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -56,7 +62,7 @@ public class SCRGame implements Screen {
 
     @Override
     public void show() {
-
+        world.setContactListener(new ListenerClass());
     }
 
     @Override
@@ -99,24 +105,6 @@ public class SCRGame implements Screen {
         img.dispose();
     }
 
-    public static void touchedDown(float x, float y){
-        tx = x;
-        ty = y;
-    }
-
-    public static void touchedUp(float x, float y){
-        float dx = tx - x;
-        float dy = ty - y;
-        tx = 0;
-        ty = 0;
-        // Тут физика закончилась, осталась геометрия и алгебра
-        if (jumps > 0){
-            float alpha = MathUtils.atan2(-dy, dx);
-            float imp = 0.1f;
-            ball.body.applyLinearImpulse(imp * MathUtils.cos(alpha), imp * MathUtils.sin(alpha),
-                    ball.body.getPosition().x, ball.body.getPosition().y, true);
-        }
-    }
     private class MyInputProcessor implements InputProcessor {
         public boolean keyDown (int keycode) {
             return false;
@@ -133,14 +121,26 @@ public class SCRGame implements Screen {
         public boolean touchDown (int x, int y, int pointer, int button) {
             touch.set(x, y, 0);
             cameraWorld.unproject(touch);
-            touchedDown(touch.x, touch.y);
+            tx = touch.x;
+            ty = touch.y;
             return false;
         }
 
         public boolean touchUp (int x, int y, int pointer, int button) {
             touch.set(x, y, 0);
             cameraWorld.unproject(touch);
-            touchedUp(touch.x, touch.y);
+            float dx = tx - touch.x;
+            float dy = ty - touch.y;
+            tx = 0;
+            ty = 0;
+            // Тут физика закончилась, осталась геометрия и алгебра
+            if (jumps > 0 & (dx != 0 | dy != 0)){
+                float alpha = MathUtils.atan2(dy, dx);
+                float imp = 0.1f;
+                ball.body.applyLinearImpulse(imp * MathUtils.cos(alpha), imp * MathUtils.sin(alpha),
+                        ball.body.getPosition().x, ball.body.getPosition().y, true);
+                jumps = 0;
+            }
             return false;
         }
 
@@ -154,6 +154,37 @@ public class SCRGame implements Screen {
 
         public boolean scrolled (float amountX, float amountY) {
             return false;
+        }
+    }
+
+
+        public class ListenerClass implements ContactListener{
+
+        @Override
+        public void beginContact(Contact contact) {
+
+        }
+
+        @Override
+        public void endContact(Contact contact) {
+
+        }
+
+        @Override
+        public void preSolve(Contact contact, Manifold oldManifold) {
+            Fixture fa = contact.getFixtureA();
+            Fixture fb = contact.getFixtureB();
+            System.out.println(fa.getBody().getType()+" has hit "+ fb.getBody().getType());
+
+            if(fa.getBody().getType() == BodyDef.BodyType.StaticBody){
+                jumps = maxJumps;
+            }
+        }
+
+
+        @Override
+        public void postSolve(Contact contact, ContactImpulse impulse) {
+
         }
     }
 }
