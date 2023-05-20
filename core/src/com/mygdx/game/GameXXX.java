@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -22,15 +21,15 @@ public class GameXXX extends Game {
 	SCRGame scrGame;
 	
 	@Override
-	public void create () {
-		batch = new SpriteBatch();
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, WIDTH, HEIGHT);
+    public void create () {
+        batch = new SpriteBatch();
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, WIDTH, HEIGHT);
 
-		scrIntro = new SCRIntro(this);
-		scrGame = new SCRGame(this);
-		setScreen(scrGame);
-	}
+        scrIntro = new SCRIntro(this);
+        scrGame = new SCRGame(this);
+        setScreen(scrGame);
+    }
 
 	@Override
 	public void dispose () {

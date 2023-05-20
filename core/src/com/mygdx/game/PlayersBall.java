@@ -26,8 +26,10 @@ public class PlayersBall {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circle;
         fixtureDef.density = 0.5f;
-        fixtureDef.friction = 0.2f;
-        fixtureDef.restitution = 0.4f; // Make it bounce a little bit
+        fixtureDef.friction = 0.5f;
+        fixtureDef.restitution = 0.5f; // Make it bounce a little bit
+
+        body.setUserData("Player");
 
 // Create our fixture and attach it to the body
         Fixture fixture = body.createFixture(fixtureDef);

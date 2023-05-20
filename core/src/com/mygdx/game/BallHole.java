@@ -25,10 +25,12 @@ public class BallHole {
 // to experiment with this
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circle;
-        //fixtureDef.getFixtureList().get(0).setUserData("p");
+
+        body.setUserData("Hole");
 
 // Create our fixture and attach it to the body
         Fixture fixture = body.createFixture(fixtureDef);
+
 
 
         circle.dispose();

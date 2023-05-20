@@ -10,11 +10,15 @@ import com.badlogic.gdx.physics.box2d.World;
 public class JumpBall {
     JumpBall(World world, float x, float y, float radius){
         BodyDef groundBodyDef = new BodyDef();
+        groundBodyDef.type = BodyDef.BodyType.KinematicBody;
         groundBodyDef.position.set(new Vector2(x, y));
         //remember that its the center of an object, it also is in METERS not pixels!
         Body jumpBall = world.createBody(groundBodyDef);
         CircleShape circle = new CircleShape();
         circle.setRadius(radius);
+
+        jumpBall.setUserData("JumpBall");
+
         jumpBall.createFixture(circle, 0.0f);
 // Clean up after ourselves
         circle.dispose();
